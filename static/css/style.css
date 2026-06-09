@@ -1,0 +1,28 @@
+:root {
+    --primary: #22c55e;
+    --bg-dark: #0f172a;
+    --card-bg: #1e293b;
+    --text: #ffffff;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+}
+
+.navbar {
+    background: var(--card-bg);
+    border-bottom: 2px solid var(--primary);
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
