@@ -17,19 +17,14 @@ from flask_login import (
 app = Flask(__name__)
 
 app.config["SECRET_KEY"] = "studybeat_secret_key"
-
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
-
 bcrypt = Bcrypt(app)
 
 login_manager = LoginManager(app)
-
 login_manager.login_view = "login"
-
 login_manager.login_message = "Inicia sesión para continuar."
 
 
@@ -38,38 +33,26 @@ login_manager.login_message = "Inicia sesión para continuar."
 # =========================
 
 class Usuario(UserMixin, db.Model):
-
     __tablename__ = "usuarios"
 
     id = db.Column(db.Integer, primary_key=True)
-
     nombre = db.Column(db.String(100), nullable=False)
-
     correo = db.Column(db.String(120), unique=True, nullable=False)
-
     password = db.Column(db.String(255), nullable=False)
 
     tareas = db.relationship("Tarea", backref="usuario", lazy=True)
-
     calificaciones = db.relationship("Calificacion", backref="usuario", lazy=True)
-
     metas = db.relationship("Meta", backref="usuario", lazy=True)
 
 
 class Tarea(db.Model):
-
     __tablename__ = "tareas"
 
     id = db.Column(db.Integer, primary_key=True)
-
     titulo = db.Column(db.String(150), nullable=False)
-
     descripcion = db.Column(db.Text)
-
     fecha_limite = db.Column(db.String(50))
-
     prioridad = db.Column(db.String(20))
-
     completada = db.Column(db.Boolean, default=False)
 
     usuario_id = db.Column(
@@ -80,13 +63,10 @@ class Tarea(db.Model):
 
 
 class Calificacion(db.Model):
-
     __tablename__ = "calificaciones"
 
     id = db.Column(db.Integer, primary_key=True)
-
     materia = db.Column(db.String(100), nullable=False)
-
     calificacion = db.Column(db.Float, nullable=False)
 
     usuario_id = db.Column(
@@ -97,15 +77,11 @@ class Calificacion(db.Model):
 
 
 class Meta(db.Model):
-
     __tablename__ = "metas"
 
     id = db.Column(db.Integer, primary_key=True)
-
     titulo = db.Column(db.String(150), nullable=False)
-
     progreso = db.Column(db.Integer, default=0)
-
     fecha_objetivo = db.Column(db.String(50))
 
     usuario_id = db.Column(
@@ -125,7 +101,7 @@ def load_user(user_id):
 
 
 # =========================
-# RUTAS
+# INICIO
 # =========================
 
 @app.route("/")
@@ -143,9 +119,7 @@ def register():
     if request.method == "POST":
 
         nombre = request.form.get("nombre")
-
         correo = request.form.get("correo")
-
         password = request.form.get("password")
 
         usuario_existente = Usuario.query.filter_by(
@@ -153,12 +127,7 @@ def register():
         ).first()
 
         if usuario_existente:
-
-            flash(
-                "El correo ya está registrado.",
-                "danger"
-            )
-
+            flash("El correo ya está registrado.", "danger")
             return redirect(url_for("register"))
 
         password_hash = bcrypt.generate_password_hash(
@@ -172,13 +141,9 @@ def register():
         )
 
         db.session.add(nuevo_usuario)
-
         db.session.commit()
 
-        flash(
-            "Registro exitoso. Inicia sesión.",
-            "success"
-        )
+        flash("Registro exitoso.", "success")
 
         return redirect(url_for("login"))
 
@@ -195,7 +160,6 @@ def login():
     if request.method == "POST":
 
         correo = request.form.get("correo")
-
         password = request.form.get("password")
 
         usuario = Usuario.query.filter_by(
@@ -210,14 +174,14 @@ def login():
             login_user(usuario)
 
             flash(
-                "Bienvenido a StudyBeat.",
+                "Bienvenido a StudyBeat",
                 "success"
             )
 
             return redirect(url_for("dashboard"))
 
         flash(
-            "Correo o contraseña incorrectos.",
+            "Correo o contraseña incorrectos",
             "danger"
         )
 
@@ -235,7 +199,7 @@ def logout():
     logout_user()
 
     flash(
-        "Sesión cerrada correctamente.",
+        "Sesión cerrada correctamente",
         "info"
     )
 
@@ -265,21 +229,18 @@ def dashboard():
 
     promedio = 0
 
-    if len(calificaciones) > 0:
-
+    if calificaciones:
         promedio = round(
-            sum(
-                c.calificacion
-                for c in calificaciones
-            ) / len(calificaciones),
+            sum(c.calificacion for c in calificaciones)
+            / len(calificaciones),
             2
         )
 
     return render_template(
         "dashboard.html",
         tareas=tareas_pendientes,
-        promedio=promedio,
-        metas=metas_activas
+        metas=metas_activas,
+        promedio=promedio
     )
 
 
@@ -290,10 +251,7 @@ def dashboard():
 @app.route("/perfil")
 @login_required
 def perfil():
-
-    return render_template(
-        "perfil.html"
-    )
+    return render_template("perfil.html")
 
 
 # =========================
@@ -303,31 +261,24 @@ def perfil():
 @app.route("/musica")
 @login_required
 def musica():
-
-    return render_template(
-        "musica.html"
-    )
+    return render_template("musica.html")
 
 
 # =========================
-# CREAR BD
+# CREAR BASE DE DATOS
 # =========================
 
 with app.app_context():
-
     db.create_all()
 
 
 # =========================
-# EJECUCIÓN
+# EJECUCIÓN LOCAL
 # =========================
 
 if __name__ == "__main__":
-
     app.run(
         host="0.0.0.0",
         port=5000,
         debug=True
     )
-        db.create_all()
-    app.run(debug=True)
