@@ -2,26 +2,29 @@ from flask import Flask
 
 app = Flask(__name__)
 
-# Esta es la ruta raíz que cargará tu página
 @app.route('/')
 def home():
+    # Aquí puedes añadir más diseño usando HTML y CSS
     return """
-    <!DOCTYPE html>
-    <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <title>StudyBeat</title>
-        <style>
-            body { font-family: sans-serif; background: #0f172a; color: white; text-align: center; padding: 50px; }
-            h1 { color: #22c55e; }
-        </style>
-    </head>
-    <body>
-        <h1>StudyBeat</h1>
-        <p>¡Tu plataforma está funcionando correctamente!</p>
-    </body>
+    <html>
+        <head>
+            <style>
+                body { background-color: #f0f2f5; font-family: Arial, sans-serif; text-align: center; }
+                h1 { color: #4a90e2; }
+                .container { margin-top: 50px; padding: 20px; background: white; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🎵 StudyBeat</h1>
+                <p>Bienvenida a tu espacio de concentración.</p>
+                <button onclick="alert('¡Funcionalidad en camino!')">Empezar a estudiar</button>
+            </div>
+        </body>
     </html>
     """
 
+if __name__ == '__main__':
+    app.run()
 if __name__ == '__main__':
     app.run()
