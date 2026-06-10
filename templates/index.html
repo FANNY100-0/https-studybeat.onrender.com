@@ -2,19 +2,14 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBeat | Organiza tu éxito</title>
+    <title>StudyBeat | Organiza y Escucha</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <nav class="navbar">
-        <h1>StudyBeat</h1>
-        <a href="/login">Iniciar Sesión</a>
-    </nav>
+    <nav><h1>StudyBeat</h1></nav>
     <main>
-        <section class="hero">
-            <h2>Estudia con ritmo, alcanza tus metas.</h2>
-        </section>
+        <h2>Tu plataforma de estudio definitiva</h2>
+        <a href="{{ url_for('login') }}" class="btn-accent">Comenzar ahora</a>
     </main>
 </body>
 </html>
