@@ -6,7 +6,7 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'studybeat_secret_key_2026'
-# Ruta absoluta para que Render encuentre la BD
+# Base de datos en el directorio actual
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'studybeat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):
     correo = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-# --- INICIALIZACIÓN ---
+# Crear tablas
 with app.app_context():
     db.create_all()
 
@@ -31,32 +31,25 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- RUTAS DE LOGIN ---
+# --- RUTAS ---
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        correo = request.form['correo']
-        password = request.form['password']
-        user = User.query.filter_by(correo=correo).first()
-        
-        if user and bcrypt.check_password_hash(user.password, password):
+        user = User.query.filter_by(correo=request.form['correo']).first()
+        if user and bcrypt.check_password_hash(user.password, request.form['password']):
             login_user(user)
             return redirect(url_for('dashboard'))
-        else:
-            return "Error: Correo o contraseña incorrectos", 401
     return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        nombre = request.form['nombre']
-        correo = request.form['correo']
-        password = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-        
-        if User.query.filter_by(correo=correo).first():
-            return "Error: Este correo ya existe"
-            
-        new_user = User(nombre=nombre, correo=correo, password=password)
+        hashed_pw = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+        new_user = User(nombre=request.form['nombre'], correo=request.form['correo'], password=hashed_pw)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -65,7 +58,7 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return f"Bienvenido {current_user.nombre}! <a href='/logout'>Cerrar sesión</a>"
+    return render_template('dashboard.html')
 
 @app.route('/logout')
 @login_required
