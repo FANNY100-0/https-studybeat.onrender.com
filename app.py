@@ -5,6 +5,7 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'studybeat_secret_key_2026'
+# La base de datos se creará en la raíz del proyecto
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studybeat.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -36,11 +37,15 @@ class Meta(db.Model):
     titulo = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+# Asegurar creación de tablas al arrancar la app
+with app.app_context():
+    db.create_all()
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- RUTAS DE AUTENTICACION ---
+# --- RUTAS ---
 @app.route('/')
 def index():
     return render_template('login.html')
@@ -70,7 +75,6 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# --- RUTAS PRINCIPALES ---
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -108,6 +112,4 @@ def musica():
     return render_template('musica.html')
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True)
