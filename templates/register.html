@@ -2,9 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>StudyBeat</title>
+    <title>Registro - StudyBeat</title>
 </head>
-<body>
-    <h1>StudyBeat</h1>
+<body style="background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+
+    <div style="background: #181818; padding: 40px; border-radius: 10px; width: 300px; text-align: center;">
+        <h2 style="color: #1DB954;">Crear Cuenta</h2>
+        <form method="POST">
+            <input type="text" name="nombre" placeholder="Nombre completo" required 
+                   style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
+            <input type="email" name="correo" placeholder="Correo electrónico" required 
+                   style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
+            <input type="password" name="password" placeholder="Contraseña" required 
+                   style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
+            <button type="submit" 
+                    style="width: 100%; padding: 10px; background: #1DB954; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px;">
+                REGISTRARSE
+            </button>
+        </form>
+        <p style="margin-top: 20px; font-size: 12px;">¿Ya tienes cuenta? <a href="/login" style="color: #1DB954;">Inicia sesión</a></p>
+    </div>
+
 </body>
 </html>
