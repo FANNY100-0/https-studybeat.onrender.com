@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
@@ -19,17 +19,10 @@ class User(db.Model, UserMixin):
     nombre = db.Column(db.String(100), nullable=False)
     correo = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
-    tareas = db.relationship('Tarea', backref='autor', lazy=True)
-    calificaciones = db.relationship('Calificacion', backref='autor', lazy=True)
-    metas = db.relationship('Meta', backref='autor', lazy=True)
 
 class Tarea(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(100), nullable=False)
-    descripcion = db.Column(db.Text)
-    fecha_limite = db.Column(db.String(20))
-    prioridad = db.Column(db.String(20))
-    completada = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Calificacion(db.Model):
@@ -41,18 +34,16 @@ class Calificacion(db.Model):
 class Meta(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(100), nullable=False)
-    progreso = db.Column(db.Integer, default=0)
-    fecha_objetivo = db.Column(db.String(20))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- RUTAS ---
+# --- RUTAS DE AUTENTICACION ---
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('login.html')
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,6 +64,13 @@ def login():
             return redirect(url_for('dashboard'))
     return render_template('login.html')
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
+
+# --- RUTAS PRINCIPALES ---
 @app.route('/dashboard')
 @login_required
 def dashboard():
@@ -80,29 +78,29 @@ def dashboard():
     promedio = sum([c.valor for c in cals]) / len(cals) if cals else 0
     return render_template('dashboard.html', promedio=round(promedio, 2))
 
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
-
-@app.route('/tareas')
+@app.route('/tareas', methods=['GET', 'POST'])
 @login_required
 def tareas():
-    data = Tarea.query.filter_by(user_id=current_user.id).all()
-    return render_template('tareas.html', tareas=data)
+    if request.method == 'POST':
+        db.session.add(Tarea(titulo=request.form['titulo'], user_id=current_user.id))
+        db.session.commit()
+    return render_template('tareas.html', tareas=Tarea.query.filter_by(user_id=current_user.id).all())
 
-@app.route('/calificaciones')
+@app.route('/calificaciones', methods=['GET', 'POST'])
 @login_required
 def calificaciones():
-    data = Calificacion.query.filter_by(user_id=current_user.id).all()
-    return render_template('calificaciones.html', calif=data)
+    if request.method == 'POST':
+        db.session.add(Calificacion(materia=request.form['materia'], valor=float(request.form['valor']), user_id=current_user.id))
+        db.session.commit()
+    return render_template('calificaciones.html', calif=Calificacion.query.filter_by(user_id=current_user.id).all())
 
-@app.route('/metas')
+@app.route('/metas', methods=['GET', 'POST'])
 @login_required
 def metas():
-    data = Meta.query.filter_by(user_id=current_user.id).all()
-    return render_template('metas.html', metas=data)
+    if request.method == 'POST':
+        db.session.add(Meta(titulo=request.form['titulo'], user_id=current_user.id))
+        db.session.commit()
+    return render_template('metas.html', metas=Meta.query.filter_by(user_id=current_user.id).all())
 
 @app.route('/musica')
 @login_required
