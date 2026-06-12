@@ -1,284 +1,115 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
-from flask_login import (
-    LoginManager,
-    UserMixin,
-    login_user,
-    login_required,
-    logout_user,
-    current_user
-)
-
-# =========================
-# CONFIGURACIÓN
-# =========================
 
 app = Flask(__name__)
-
-app.config["SECRET_KEY"] = "studybeat_secret_key"
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['SECRET_KEY'] = 'studybeat_secret_key_2026'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studybeat.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
-
 login_manager = LoginManager(app)
-login_manager.login_view = "login"
-login_manager.login_message = "Inicia sesión para continuar."
+login_manager.login_view = 'login'
 
-
-# =========================
-# MODELOS
-# =========================
-
-class Usuario(UserMixin, db.Model):
-    __tablename__ = "usuarios"
-
+# --- MODELOS ---
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
-    correo = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-
-    tareas = db.relationship("Tarea", backref="usuario", lazy=True)
-    calificaciones = db.relationship("Calificacion", backref="usuario", lazy=True)
-    metas = db.relationship("Meta", backref="usuario", lazy=True)
-
+    correo = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    tareas = db.relationship('Tarea', backref='autor', lazy=True)
+    calificaciones = db.relationship('Calificacion', backref='autor', lazy=True)
+    metas = db.relationship('Meta', backref='autor', lazy=True)
 
 class Tarea(db.Model):
-    __tablename__ = "tareas"
-
     id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(150), nullable=False)
+    titulo = db.Column(db.String(100), nullable=False)
     descripcion = db.Column(db.Text)
-    fecha_limite = db.Column(db.String(50))
+    fecha_limite = db.Column(db.String(20))
     prioridad = db.Column(db.String(20))
     completada = db.Column(db.Boolean, default=False)
-
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuarios.id"),
-        nullable=False
-    )
-
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Calificacion(db.Model):
-    __tablename__ = "calificaciones"
-
     id = db.Column(db.Integer, primary_key=True)
     materia = db.Column(db.String(100), nullable=False)
-    calificacion = db.Column(db.Float, nullable=False)
-
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuarios.id"),
-        nullable=False
-    )
-
+    valor = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 class Meta(db.Model):
-    __tablename__ = "metas"
-
     id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(150), nullable=False)
+    titulo = db.Column(db.String(100), nullable=False)
     progreso = db.Column(db.Integer, default=0)
-    fecha_objetivo = db.Column(db.String(50))
-
-    usuario_id = db.Column(
-        db.Integer,
-        db.ForeignKey("usuarios.id"),
-        nullable=False
-    )
-
-
-# =========================
-# FLASK LOGIN
-# =========================
+    fecha_objetivo = db.Column(db.String(20))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return User.query.get(int(user_id))
 
-
-# =========================
-# INICIO
-# =========================
-
-@app.route("/")
+# --- RUTAS ---
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-
-# =========================
-# REGISTRO
-# =========================
-
-@app.route("/register", methods=["GET", "POST"])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
-
-    if request.method == "POST":
-
-        nombre = request.form.get("nombre")
-        correo = request.form.get("correo")
-        password = request.form.get("password")
-
-        usuario_existente = Usuario.query.filter_by(
-            correo=correo
-        ).first()
-
-        if usuario_existente:
-            flash("El correo ya está registrado.", "danger")
-            return redirect(url_for("register"))
-
-        password_hash = bcrypt.generate_password_hash(
-            password
-        ).decode("utf-8")
-
-        nuevo_usuario = Usuario(
-            nombre=nombre,
-            correo=correo,
-            password=password_hash
-        )
-
-        db.session.add(nuevo_usuario)
+    if request.method == 'POST':
+        hashed_pw = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
+        new_user = User(nombre=request.form['nombre'], correo=request.form['correo'], password=hashed_pw)
+        db.session.add(new_user)
         db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html')
 
-        flash("Registro exitoso.", "success")
-
-        return redirect(url_for("login"))
-
-    return render_template("register.html")
-
-
-# =========================
-# LOGIN
-# =========================
-
-@app.route("/login", methods=["GET", "POST"])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        user = User.query.filter_by(correo=request.form['correo']).first()
+        if user and bcrypt.check_password_hash(user.password, request.form['password']):
+            login_user(user)
+            return redirect(url_for('dashboard'))
+    return render_template('login.html')
 
-    if request.method == "POST":
-
-        correo = request.form.get("correo")
-        password = request.form.get("password")
-
-        usuario = Usuario.query.filter_by(
-            correo=correo
-        ).first()
-
-        if usuario and bcrypt.check_password_hash(
-            usuario.password,
-            password
-        ):
-
-            login_user(usuario)
-
-            flash(
-                "Bienvenido a StudyBeat",
-                "success"
-            )
-
-            return redirect(url_for("dashboard"))
-
-        flash(
-            "Correo o contraseña incorrectos",
-            "danger"
-        )
-
-    return render_template("login.html")
-
-
-# =========================
-# LOGOUT
-# =========================
-
-@app.route("/logout")
-@login_required
-def logout():
-
-    logout_user()
-
-    flash(
-        "Sesión cerrada correctamente",
-        "info"
-    )
-
-    return redirect(url_for("login"))
-
-
-# =========================
-# DASHBOARD
-# =========================
-
-@app.route("/dashboard")
+@app.route('/dashboard')
 @login_required
 def dashboard():
+    cals = Calificacion.query.filter_by(user_id=current_user.id).all()
+    promedio = sum([c.valor for c in cals]) / len(cals) if cals else 0
+    return render_template('dashboard.html', promedio=round(promedio, 2))
 
-    tareas_pendientes = Tarea.query.filter_by(
-        usuario_id=current_user.id,
-        completada=False
-    ).count()
-
-    metas_activas = Meta.query.filter_by(
-        usuario_id=current_user.id
-    ).count()
-
-    calificaciones = Calificacion.query.filter_by(
-        usuario_id=current_user.id
-    ).all()
-
-    promedio = 0
-
-    if calificaciones:
-        promedio = round(
-            sum(c.calificacion for c in calificaciones)
-            / len(calificaciones),
-            2
-        )
-
-    return render_template(
-        "dashboard.html",
-        tareas=tareas_pendientes,
-        metas=metas_activas,
-        promedio=promedio
-    )
-
-
-# =========================
-# PERFIL
-# =========================
-
-@app.route("/perfil")
+@app.route('/logout')
 @login_required
-def perfil():
-    return render_template("perfil.html")
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
+@app.route('/tareas')
+@login_required
+def tareas():
+    data = Tarea.query.filter_by(user_id=current_user.id).all()
+    return render_template('tareas.html', tareas=data)
 
-# =========================
-# MÚSICA
-# =========================
+@app.route('/calificaciones')
+@login_required
+def calificaciones():
+    data = Calificacion.query.filter_by(user_id=current_user.id).all()
+    return render_template('calificaciones.html', calif=data)
 
-@app.route("/musica")
+@app.route('/metas')
+@login_required
+def metas():
+    data = Meta.query.filter_by(user_id=current_user.id).all()
+    return render_template('metas.html', metas=data)
+
+@app.route('/musica')
 @login_required
 def musica():
-    return render_template("musica.html")
+    return render_template('musica.html')
 
-
-# =========================
-# CREAR BASE DE DATOS
-# =========================
-
-with app.app_context():
-    db.create_all()
-
-
-# =========================
-# EJECUCIÓN LOCAL
-# =========================
-
-if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=5000,
-        debug=True
-    )
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
