@@ -2,24 +2,26 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <title>Login - StudyBeat</title>
 </head>
-<body style="background-color: #121212; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif;">
+<body>
 
-    <div style="background: #181818; padding: 40px; border-radius: 10px; width: 300px; text-align: center;">
-        <h2 style="color: #1DB954;">Login StudyBeat</h2>
-        <form method="POST">
-            <input type="email" name="correo" placeholder="Correo electrónico" required 
-                   style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
-            <input type="password" name="password" placeholder="Contraseña" required 
-                   style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none;">
-            <button type="submit" 
-                    style="width: 100%; padding: 10px; background: #1DB954; color: white; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; margin-top: 10px;">
-                INGRESAR
-            </button>
+    <div class="auth-card">
+        <h2 style="color: #1DB954; margin-bottom: 20px;">Login StudyBeat</h2>
+        
+        <form method="POST" action="/login">
+            <input type="email" name="correo" placeholder="Correo electrónico" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            
+            <button type="submit">INGRESAR</button>
         </form>
-        <p style="margin-top: 20px; font-size: 12px;">¿No tienes cuenta? <a href="/register" style="color: #1DB954;">Regístrate</a></p>
+
+        <p style="margin-top: 20px; font-size: 14px;">
+            ¿No tienes cuenta? 
+            <a href="/register" style="color: #1DB954; text-decoration: none; font-weight: bold;">Regístrate</a>
+        </p>
     </div>
 
 </body>
