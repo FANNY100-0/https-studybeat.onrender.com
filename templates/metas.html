@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>Metas - StudyBeat</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Metas Académicas</h1>
+        <form method="POST">
+            <input type="text" name="titulo" placeholder="Ej: Terminar proyecto" required>
+            <button type="submit">Crear Meta</button>
+        </form>
+    </div>
+</body>
+</html>
