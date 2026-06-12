@@ -2,10 +2,13 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'studybeat_secret_key_2026'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///studybeat.db'
+# Usamos una ruta absoluta para evitar errores de permisos en Render
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'studybeat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -13,6 +16,7 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+# --- MODELOS ---
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
@@ -35,6 +39,7 @@ class Meta(db.Model):
     titulo = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+# --- INICIALIZACIÓN ---
 with app.app_context():
     db.create_all()
 
@@ -42,6 +47,7 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# --- RUTAS ---
 @app.route('/')
 def index():
     return render_template('login.html')
