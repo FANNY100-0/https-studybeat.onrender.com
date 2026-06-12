@@ -1,30 +1,41 @@
-:root {
-    --bg-dark: #0f172a;
-    --sidebar-bg: #1e293b;
-    --accent-green: #22c55e;
-    --text-white: #ffffff;
-}
-
+/* Diseño base para todas las páginas */
 body {
-    background-color: var(--bg-dark);
-    color: var(--text-white);
-    font-family: 'Segoe UI', sans-serif;
+    background-color: #121212;
+    color: #FFFFFF;
+    font-family: sans-serif;
     margin: 0;
-}
-
-.sidebar {
-    background-color: var(--sidebar-bg);
-    width: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 100vh;
-    position: fixed;
-    padding: 20px;
 }
 
-.btn-accent {
-    background-color: var(--accent-green);
+/* Contenedor centralizado para formularios */
+.auth-card {
+    background: #181818;
+    padding: 40px;
+    border-radius: 10px;
+    width: 300px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    box-sizing: border-box;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #1DB954;
     color: white;
     border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
+    border-radius: 20px;
     cursor: pointer;
+    font-weight: bold;
+    margin-top: 10px;
 }
