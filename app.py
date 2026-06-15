@@ -66,7 +66,8 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
+    # Aquí puedes pasarle datos al template
+    return render_template('dashboard.html', user=current_user)
 
 @app.route('/logout')
 @login_required
