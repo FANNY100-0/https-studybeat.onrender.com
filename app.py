@@ -39,12 +39,20 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        user = User.query.filter_by(correo=request.form['correo']).first()
-        if user and bcrypt.check_password_hash(user.password, request.form['password']):
+        correo = request.form['correo']
+        password = request.form['password']
+        user = User.query.filter_by(correo=correo).first()
+        
+        if not user:
+            return "Error: No existe ningún usuario con ese correo en la base de datos."
+        
+        if bcrypt.check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('dashboard'))
+        else:
+            return "Error: La contraseña que ingresaste es incorrecta."
+            
     return render_template('login.html')
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
