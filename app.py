@@ -6,7 +6,8 @@ import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'studybeat_secret_key_2026'
-# Base de datos en el directorio actual
+
+# Configuración de base de datos para Render
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'studybeat.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -23,7 +24,7 @@ class User(db.Model, UserMixin):
     correo = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
 
-# Crear tablas
+# Inicialización de tablas: Asegúrate de que esto esté aquí
 with app.app_context():
     db.create_all()
 
@@ -39,25 +40,22 @@ def home():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        correo = request.form['correo']
-        password = request.form['password']
+        correo = request.form.get('correo')
+        password = request.form.get('password')
         user = User.query.filter_by(correo=correo).first()
-        
-        if not user:
-            return "Error: No existe ningún usuario con ese correo en la base de datos."
-        
-        if bcrypt.check_password_hash(user.password, password):
+        if user and bcrypt.check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('dashboard'))
-        else:
-            return "Error: La contraseña que ingresaste es incorrecta."
-            
+        return "Error: Credenciales incorrectas", 401
     return render_template('login.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        hashed_pw = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-        new_user = User(nombre=request.form['nombre'], correo=request.form['correo'], password=hashed_pw)
+        nombre = request.form.get('nombre')
+        correo = request.form.get('correo')
+        password = bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
+        new_user = User(nombre=nombre, correo=correo, password=password)
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('login'))
@@ -66,8 +64,17 @@ def register():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Aquí puedes pasarle datos al template
-    return render_template('dashboard.html', user=current_user)
+    return render_template('dashboard.html')
+
+@app.route('/tareas')
+@login_required
+def tareas():
+    return render_template('tareas.html')
+
+@app.route('/calificaciones')
+@login_required
+def calificaciones():
+    return render_template('calificaciones.html')
 
 @app.route('/logout')
 @login_required
