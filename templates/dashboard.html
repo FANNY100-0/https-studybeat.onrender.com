@@ -2,9 +2,19 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>StudyBeat</title>
+    <title>Dashboard - StudyBeat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>StudyBeat</h1>
+    <div class="auth-card">
+        <h1>¡Bienvenido a StudyBeat!</h1>
+        <p>Hola, estás dentro del sistema.</p>
+        
+        <nav>
+            <a href="/tareas">Ver Tareas</a> | 
+            <a href="/calificaciones">Mis Calificaciones</a> | 
+            <a href="/logout">Cerrar sesión</a>
+        </nav>
+    </div>
 </body>
 </html>
