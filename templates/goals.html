@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Metas
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    Metas Académicas
+</h1>
+
+<div class="card">
+
+```
+<form
+    method="POST"
+    action="{{ url_for('add_goal') }}"
+    class="form-grid">
+
+    <input
+        type="text"
+        name="title"
+        placeholder="Meta"
+        required>
+
+    <input
+        type="number"
+        name="progress"
+        min="0"
+        max="100"
+        placeholder="Progreso (%)"
+        required>
+
+    <button class="btn">
+        Crear Meta
+    </button>
+
+</form>
+```
+
+</div>
+
+{% for goal in goals %}
+
+<div class="card">
+
+```
+<div class="goal-header">
+
+    <h3>{{ goal.title }}</h3>
+
+    <span>{{ goal.progress }}%</span>
+
+</div>
+
+<div class="progress-bar">
+
+    <div
+        class="progress"
+        style="width: {{ goal.progress }}%">
+    </div>
+
+</div>
+
+<form
+    method="POST"
+    action="{{ url_for('update_goal', id=goal.id) }}"
+    class="update-goal">
+
+    <input
+        type="number"
+        min="0"
+        max="100"
+        name="progress"
+        value="{{ goal.progress }}">
+
+    <button class="btn">
+        Actualizar
+    </button>
+
+    <a
+        href="{{ url_for('delete_goal', id=goal.id) }}"
+        class="delete-btn">
+
+        Eliminar
+
+    </a>
+
+</form>
+```
+
+</div>
+
+{% endfor %}
+
+{% endblock %}
