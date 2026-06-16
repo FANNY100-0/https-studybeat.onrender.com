@@ -1,17 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>Metas - StudyBeat</title>
-</head>
-<body>
-    <div class="container">
-        <h1>Metas Académicas</h1>
-        <form method="POST">
-            <input type="text" name="titulo" placeholder="Ej: Terminar proyecto" required>
-            <button type="submit">Crear Meta</button>
-        </form>
+{% extends 'base.html' %}
+{% block content %}
+<h2>🎯 Mis Metas</h2>
+<form method="POST" class="card">
+    <input type="text" name="desc" placeholder="Nombre de la meta" required>
+    <input type="number" name="progreso" placeholder="Progreso (0-100)" min="0" max="100" required>
+    <button type="submit">Registrar Meta</button>
+</form>
+{% for m in metas %}
+<div class="card" style="margin-top: 10px;">
+    <p>{{ m.descripcion }}</p>
+    <div style="background: #333; height: 10px; border-radius: 5px;">
+        <div style="background: #1DB954; width: {{ m.progreso }}%; height: 100%;"></div>
     </div>
-</body>
-</html>
+</div>
+{% endfor %}
+{% endblock %}
