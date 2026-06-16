@@ -1,28 +1,16 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <title>Tareas - StudyBeat</title>
-</head>
-<body>
-    <nav>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/tareas">Tareas</a>
-    </nav>
-    <div class="container">
-        <h1>Tus Tareas</h1>
-        <div class="card">
-            <form method="POST">
-                <input type="text" name="titulo" placeholder="Título de la tarea" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-                <button type="submit">Agregar Tarea</button>
-            </form>
-        </div>
-        <ul>
-            {% for tarea in tareas %}
-            <li>{{ tarea.titulo }} - {% if tarea.completada %} ✅ {% else %} ❌ {% endif %}</li>
-            {% endfor %}
-        </ul>
+{% extends 'base.html' %}
+{% block content %}
+<h2>📝 Mis Tareas</h2>
+<form method="POST" class="card" style="margin-bottom: 20px;">
+    <input type="text" name="titulo" placeholder="Nueva tarea..." required style="padding: 10px; width: 70%;">
+    <button type="submit" style="padding: 10px; background: #1DB954; border:none; color:white;">Agregar</button>
+</form>
+<div class="card">
+    {% for t in tareas %}
+    <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333;">
+        {{ t.titulo }}
+        <a href="{{ url_for('delete_tarea', id=t.id) }}" style="color: #ff4d4d;">Eliminar</a>
     </div>
-</body>
-</html>
+    {% endfor %}
+</div>
+{% endblock %}
