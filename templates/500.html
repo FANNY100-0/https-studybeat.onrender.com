@@ -6,17 +6,16 @@
     <title>Error 500 | StudyBeat</title>
 
     <style>
-
         *{
             margin:0;
             padding:0;
             box-sizing:border-box;
-            font-family:Arial,sans-serif;
+            font-family:'Segoe UI',sans-serif;
         }
 
         body{
             background:#121212;
-            color:white;
+            color:#fff;
             min-height:100vh;
             display:flex;
             justify-content:center;
@@ -30,19 +29,21 @@
         }
 
         h1{
-            font-size:120px;
+            font-size:140px;
             color:#1DB954;
             margin-bottom:10px;
         }
 
         h2{
-            margin-bottom:15px;
+            font-size:40px;
+            margin-bottom:20px;
         }
 
         p{
             color:#b3b3b3;
+            font-size:20px;
             line-height:1.6;
-            margin-bottom:25px;
+            margin-bottom:30px;
         }
 
         .buttons{
@@ -52,23 +53,20 @@
             flex-wrap:wrap;
         }
 
-        a{
-            display:inline-block;
-            padding:12px 25px;
+        .btn{
             background:#1DB954;
             color:white;
+            padding:14px 28px;
+            border-radius:12px;
             text-decoration:none;
-            border-radius:10px;
             transition:.3s;
+            font-weight:600;
         }
 
-        a:hover{
-            opacity:.9;
+        .btn:hover{
             transform:translateY(-2px);
         }
-
     </style>
-
 </head>
 <body>
 
@@ -80,19 +78,12 @@
 
         <p>
             Ocurrió un problema inesperado mientras procesábamos tu solicitud.
-            Intenta actualizar la página o vuelve más tarde.
+            Intenta nuevamente dentro de unos minutos.
         </p>
 
         <div class="buttons">
-
-            <a href="/">
-                Ir al Inicio
-            </a>
-
-            <a href="javascript:location.reload();">
-                Reintentar
-            </a>
-
+            <a href="/" class="btn">Ir al Inicio</a>
+            <a href="javascript:location.reload();" class="btn">Reintentar</a>
         </div>
 
     </div>
