@@ -1,16 +1,38 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>StudyBeat | Organiza y Escucha</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav><h1>StudyBeat</h1></nav>
-    <main>
-        <h2>Tu plataforma de estudio definitiva</h2>
-        <a href="{{ url_for('login') }}" class="btn-accent">Comenzar ahora</a>
-    </main>
-</body>
-</html> 
+{% extends 'base.html' %}
 
+{% block title %}
+StudyBeat
+{% endblock %}
+
+{% block auth_content %}
+
+<div class="hero">
+
+```
+<div class="hero-content">
+
+    <h1>StudyBeat</h1>
+
+    <p>
+        Organiza tus tareas, controla tus calificaciones,
+        alcanza tus metas y estudia con música.
+    </p>
+
+    <div class="hero-buttons">
+
+        <a href="{{ url_for('login') }}" class="btn">
+            Iniciar Sesión
+        </a>
+
+        <a href="{{ url_for('register') }}" class="btn btn-outline">
+            Crear Cuenta
+        </a>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+{% endblock %}
