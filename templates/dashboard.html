@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Dashboard - StudyBeat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="auth-card">
-        <h1>¡Bienvenido a StudyBeat!</h1>
-        <p>Hola, estás dentro del sistema.</p>
-        
-        <nav>
-            <a href="/tareas">Ver Tareas</a> | 
-            <a href="/calificaciones">Mis Calificaciones</a> | 
-            <a href="/logout">Cerrar sesión</a>
-        </nav>
+{% extends 'base.html' %}
+{% block content %}
+<h1>Dashboard</h1>
+<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px;">
+    <div class="card"><h3>Tareas</h3><p>Pendientes: 5</p></div>
+    <div class="card"><h3>Promedio</h3><p>9.4</p></div>
+    <div class="card"><h3>Metas</h3><p>3 activas</p></div>
+    <div class="card"><h3>Materias</h3><p>6 registradas</p></div>
+</div>
+
+<section style="margin-top: 40px;">
+    <h2>Próximas tareas</h2>
+    <div class="card" style="margin-top: 10px;">
+        <p>No hay tareas próximas programadas.</p>
     </div>
-</body>
-</html>
+</section>
+{% endblock %}
