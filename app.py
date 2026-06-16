@@ -15,11 +15,23 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
+# --- MODELOS ---
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(100), nullable=False)
     correo = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
+
+class Tarea(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+class Calificacion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    materia = db.Column(db.String(100), nullable=False)
+    valor = db.Column(db.Float, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -28,6 +40,7 @@ with app.app_context():
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# --- RUTAS ---
 @app.route('/')
 def home():
     return redirect(url_for('login'))
@@ -55,6 +68,26 @@ def register():
 @login_required
 def dashboard():
     return render_template('dashboard.html')
+
+@app.route('/tareas', methods=['GET', 'POST'])
+@login_required
+def tareas():
+    if request.method == 'POST':
+        db.session.add(Tarea(titulo=request.form.get('titulo'), user_id=current_user.id))
+        db.session.commit()
+        return redirect(url_for('tareas'))
+    lista = Tarea.query.filter_by(user_id=current_user.id).all()
+    return render_template('tareas.html', tareas=lista)
+
+@app.route('/calificaciones', methods=['GET', 'POST'])
+@login_required
+def calificaciones():
+    if request.method == 'POST':
+        db.session.add(Calificacion(materia=request.form.get('materia'), valor=float(request.form.get('valor')), user_id=current_user.id))
+        db.session.commit()
+        return redirect(url_for('calificaciones'))
+    lista = Calificacion.query.filter_by(user_id=current_user.id).all()
+    return render_template('calificaciones.html', calif=lista)
 
 @app.route('/logout')
 @login_required
