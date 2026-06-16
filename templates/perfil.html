@@ -1,10 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>StudyBeat</title>
-</head>
-<body>
-    <h1>StudyBeat</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Perfil
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    Perfil
+</h1>
+
+<div class="profile-card">
+
+```
+<div class="avatar">
+
+    <i class="fas fa-user-circle"></i>
+
+</div>
+
+<h2>
+    {{ current_user.username }}
+</h2>
+
+<p>
+    {{ current_user.email }}
+</p>
+```
+
+</div>
+
+<div class="cards-grid">
+
+```
+<div class="card stat-card">
+
+    <h3>Tareas</h3>
+
+    <span>
+        {{ task_count }}
+    </span>
+
+</div>
+
+<div class="card stat-card">
+
+    <h3>Calificaciones</h3>
+
+    <span>
+        {{ grade_count }}
+    </span>
+
+</div>
+
+<div class="card stat-card">
+
+    <h3>Metas</h3>
+
+    <span>
+        {{ goal_count }}
+    </span>
+
+</div>
+```
+
+</div>
+
+{% endblock %}
