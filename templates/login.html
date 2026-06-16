@@ -1,25 +1,44 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Login | StudyBeat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .auth-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .auth-box { background: #1E1E1E; padding: 40px; border-radius: 15px; width: 350px; text-align: center; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        button { width: 100%; padding: 10px; background: #1DB954; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <div class="auth-container">
-        <form method="POST" class="auth-box">
-            <h2>Iniciar Sesión</h2>
-            <input type="email" name="email" placeholder="Correo" required>
-            <input type="password" name="password" placeholder="Contraseña" required>
-            <button type="submit">Entrar</button>
-            <p style="margin-top: 15px;"><a href="{{ url_for('register') }}" style="color: #1DB954;">Crear cuenta</a></p>
-        </form>
-    </div>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}
+Iniciar Sesión
+{% endblock %}
+
+{% block auth_content %}
+
+<div class="auth-container">
+
+```
+<form method="POST" class="auth-card">
+
+    <h2>Iniciar Sesión</h2>
+
+    <input
+        type="email"
+        name="email"
+        placeholder="Correo electrónico"
+        required>
+
+    <input
+        type="password"
+        name="password"
+        placeholder="Contraseña"
+        required>
+
+    <button type="submit" class="btn">
+        Entrar
+    </button>
+
+    <p>
+        ¿No tienes cuenta?
+        <a href="{{ url_for('register') }}">
+            Regístrate
+        </a>
+    </p>
+
+</form>
+```
+
+</div>
+
+{% endblock %}
