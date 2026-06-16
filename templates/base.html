@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyBeat | Tu ecosistema académico</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">StudyBeat</div>
+            <nav>
+                <ul>
+                    <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+                    <li><a href="#">📝 Tareas</a></li>
+                    <li><a href="#">📚 Calificaciones</a></li>
+                    <li><a href="#">🎯 Metas</a></li>
+                    <li><a href="#">🎵 Música</a></li>
+                    <li><a href="#">👤 Perfil</a></li>
+                </ul>
+            </nav>
+            <div class="logout-btn">
+                <a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a>
+            </div>
+        </aside>
+        
+        <main class="content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
