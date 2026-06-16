@@ -10,16 +10,16 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="logo">StudyBeat</div>
-            <nav>
-                <ul>
-                    <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
-                    <li><a href="#">📝 Tareas</a></li>
-                    <li><a href="#">📚 Calificaciones</a></li>
-                    <li><a href="#">🎯 Metas</a></li>
-                    <li><a href="#">🎵 Música</a></li>
-                    <li><a href="#">👤 Perfil</a></li>
-                </ul>
-            </nav>
+           <nav>
+    <ul>
+        <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+        <li><a href="{{ url_for('tareas') }}">📝 Tareas</a></li>
+        <li><a href="{{ url_for('calificaciones') }}">📚 Calificaciones</a></li>
+        <li><a href="{{ url_for('metas') }}">🎯 Metas</a></li>
+        <li><a href="{{ url_for('musica') }}">🎵 Música</a></li>
+        <li><a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a></li>
+    </ul>
+</nav>
             <div class="logout-btn">
                 <a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a>
             </div>
