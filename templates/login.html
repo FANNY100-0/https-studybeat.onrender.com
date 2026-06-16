@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Iniciar Sesión
+Iniciar Sesión | StudyBeat
 {% endblock %}
 
 {% block auth_content %}
@@ -9,34 +9,62 @@ Iniciar Sesión
 <div class="auth-container">
 
 ```
-<form method="POST" class="auth-card">
+<div class="auth-card">
 
-    <h2>Iniciar Sesión</h2>
+    <h2>Bienvenido a StudyBeat</h2>
 
-    <input
-        type="email"
-        name="email"
-        placeholder="Correo electrónico"
-        required>
-
-    <input
-        type="password"
-        name="password"
-        placeholder="Contraseña"
-        required>
-
-    <button type="submit" class="btn">
-        Entrar
-    </button>
-
-    <p>
-        ¿No tienes cuenta?
-        <a href="{{ url_for('register') }}">
-            Regístrate
-        </a>
+    <p class="auth-subtitle">
+        Organiza tu vida académica en un solo lugar.
     </p>
 
-</form>
+    <form method="POST">
+
+        <div class="form-group">
+
+            <label>Correo Electrónico</label>
+
+            <input
+                type="email"
+                name="email"
+                placeholder="correo@ejemplo.com"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Contraseña</label>
+
+            <input
+                type="password"
+                name="password"
+                placeholder="********"
+                required>
+
+        </div>
+
+        <button
+            type="submit"
+            class="btn">
+
+            Iniciar Sesión
+
+        </button>
+
+    </form>
+
+    <div class="auth-footer">
+
+        <p>
+            ¿No tienes cuenta?
+            <a href="{{ url_for('register') }}">
+                Regístrate aquí
+            </a>
+        </p>
+
+    </div>
+
+</div>
 ```
 
 </div>
