@@ -1,33 +1,106 @@
 <!DOCTYPE html>
+
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudyBeat | Tu ecosistema académico</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <title>{% block title %}StudyBeat{% endblock %}</title>
+
+```
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+```
+
 </head>
+
 <body>
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="logo">StudyBeat</div>
-           <nav>
-    <ul>
-        <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
-        <li><a href="{{ url_for('tareas') }}">📝 Tareas</a></li>
-        <li><a href="{{ url_for('calificaciones') }}">📚 Calificaciones</a></li>
-        <li><a href="{{ url_for('metas') }}">🎯 Metas</a></li>
-        <li><a href="{{ url_for('musica') }}">🎵 Música</a></li>
-        <li><a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a></li>
-    </ul>
-</nav>
-            <div class="logout-btn">
-                <a href="{{ url_for('logout') }}">🚪 Cerrar sesión</a>
-            </div>
-        </aside>
-        
-        <main class="content">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
+
+```
+{% if current_user.is_authenticated %}
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <h2>StudyBeat</h2>
+        </div>
+
+        <nav>
+
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fas fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('tasks') }}">
+                <i class="fas fa-list-check"></i>
+                Tareas
+            </a>
+
+            <a href="{{ url_for('grades') }}">
+                <i class="fas fa-book"></i>
+                Calificaciones
+            </a>
+
+            <a href="{{ url_for('goals') }}">
+                <i class="fas fa-bullseye"></i>
+                Metas
+            </a>
+
+            <a href="{{ url_for('music') }}">
+                <i class="fas fa-music"></i>
+                Música
+            </a>
+
+            <a href="{{ url_for('profile') }}">
+                <i class="fas fa-user"></i>
+                Perfil
+            </a>
+
+            <a href="{{ url_for('logout') }}" class="logout">
+                <i class="fas fa-right-from-bracket"></i>
+                Cerrar sesión
+            </a>
+
+        </nav>
+
+    </aside>
+
+    <main class="content">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+
+        {% for category, message in messages %}
+
+        <div class="alert {{ category }}">
+            {{ message }}
+        </div>
+
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+{% else %}
+
+{% block auth_content %}
+{% endblock %}
+
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+```
+
 </body>
+
 </html>
