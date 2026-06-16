@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Tareas
+{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">
+    Gestión de Tareas
+</h1>
+
+<div class="card">
+
+```
+<form
+    method="POST"
+    action="{{ url_for('add_task') }}"
+    class="form-grid">
+
+    <input
+        type="text"
+        name="title"
+        placeholder="Título"
+        required>
+
+    <input
+        type="text"
+        name="description"
+        placeholder="Descripción">
+
+    <input
+        type="date"
+        name="due_date">
+
+    <select name="priority">
+
+        <option value="Baja">
+            Baja
+        </option>
+
+        <option value="Media">
+            Media
+        </option>
+
+        <option value="Alta">
+            Alta
+        </option>
+
+    </select>
+
+    <button type="submit" class="btn">
+        Crear Tarea
+    </button>
+
+</form>
+```
+
+</div>
+
+<div class="card">
+
+```
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Título</th>
+            <th>Fecha</th>
+            <th>Prioridad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for task in tasks %}
+
+        <tr>
+
+            <td>{{ task.title }}</td>
+
+            <td>{{ task.due_date }}</td>
+
+            <td>{{ task.priority }}</td>
+
+            <td>
+
+                {% if task.completed %}
+                Completada
+                {% else %}
+                Pendiente
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                <a
+                    href="{{ url_for('complete_task', id=task.id) }}"
+                    class="action-btn">
+
+                    ✓
+
+                </a>
+
+                <a
+                    href="{{ url_for('delete_task', id=task.id) }}"
+                    class="delete-btn">
+
+                    ✕
+
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+```
+
+</div>
+
+{% endblock %}
