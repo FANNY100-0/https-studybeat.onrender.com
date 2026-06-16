@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bcrypt import Bcrypt
-import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'studybeat-secret-key-2026'
@@ -43,10 +42,7 @@ class Meta(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# --- Rutas de Autenticación ---
-@app.route('/')
-def index():
-    return redirect(url_for('login'))
+# --- Rutas CRUD ---
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -57,40 +53,63 @@ def login():
             return redirect(url_for('dashboard'))
     return render_template('login.html')
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        pw = bcrypt.generate_password_hash(request.form['password']).decode('utf-8')
-        user = User(username=request.form['username'], email=request.form['email'], password=pw)
-        db.session.add(user)
-        db.session.commit()
-        return redirect(url_for('login'))
-    return render_template('register.html')
-
-# --- Rutas de Dashboard y CRUD ---
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    tareas = Tarea.query.filter_by(user_id=current_user.id).all()
-    calificaciones = Calificacion.query.filter_by(user_id=current_user.id).all()
-    metas = Meta.query.filter_by(user_id=current_user.id).all()
-    return render_template('dashboard.html', tareas=tareas, cal=calificaciones, metas=metas)
+    return render_template('dashboard.html')
 
-@app.route('/tarea/add', methods=['POST'])
+# Tareas
+@app.route('/tareas', methods=['GET', 'POST'])
 @login_required
-def add_tarea():
-    nueva = Tarea(titulo=request.form['titulo'], user_id=current_user.id)
-    db.session.add(nueva)
-    db.session.commit()
-    return redirect(url_for('dashboard'))
+def tareas():
+    if request.method == 'POST':
+        t = Tarea(titulo=request.form['titulo'], user_id=current_user.id)
+        db.session.add(t)
+        db.session.commit()
+    lista = Tarea.query.filter_by(user_id=current_user.id).all()
+    return render_template('tareas.html', tareas=lista)
+
+@app.route('/tarea/delete/<int:id>')
+@login_required
+def delete_tarea(id):
+    t = Tarea.query.get_or_404(id)
+    if t.user_id == current_user.id:
+        db.session.delete(t)
+        db.session.commit()
+    return redirect(url_for('tareas'))
+
+# Calificaciones
+@app.route('/calificaciones', methods=['GET', 'POST'])
+@login_required
+def calificaciones():
+    if request.method == 'POST':
+        c = Calificacion(materia=request.form['materia'], nota=float(request.form['nota']), user_id=current_user.id)
+        db.session.add(c)
+        db.session.commit()
+    lista = Calificacion.query.filter_by(user_id=current_user.id).all()
+    return render_template('calificaciones.html', notas=lista)
+
+# Metas
+@app.route('/metas', methods=['GET', 'POST'])
+@login_required
+def metas():
+    if request.method == 'POST':
+        m = Meta(descripcion=request.form['desc'], progreso=int(request.form['progreso']), user_id=current_user.id)
+        db.session.add(m)
+        db.session.commit()
+    lista = Meta.query.filter_by(user_id=current_user.id).all()
+    return render_template('metas.html', metas=lista)
+
+@app.route('/musica')
+@login_required
+def musica():
+    return render_template('musica.html')
 
 @app.route('/logout')
-@login_required
 def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# Inicialización
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
