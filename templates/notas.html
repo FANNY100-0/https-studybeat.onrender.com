@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Notas - StudyBeat</title>
+
+<style>
+body{
+    background:#0f0f0f;
+    color:white;
+    font-family:Arial,sans-serif;
+    margin:0;
+}
+
+header{
+    background:#111;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+form{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+}
+
+button{
+    padding:12px 20px;
+    background:#00cfff;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.note{
+    background:#1b1b1b;
+    margin-top:10px;
+    padding:15px;
+    border-radius:10px;
+}
+
+a{
+    color:#00cfff;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <h1>📝 Mis Notas</h1>
+    <a href="/">⬅ Volver al inicio</a>
+</header>
+
+<div class="container">
+
+    <form method="POST">
+        <input
+            type="text"
+            name="note"
+            placeholder="Escribe una nota..."
+            required
+        >
+        <button type="submit">
+            Guardar
+        </button>
+    </form>
+
+    <h2>Tus notas</h2>
+
+    {% if notes %}
+        {% for note in notes %}
+            <div class="note">
+                {{ note }}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No hay notas todavía.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
