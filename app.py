@@ -4,11 +4,7 @@ app = Flask(__name__)
 app.secret_key = "studybeat_2026"
 
 
-# =========================
-# INIT DATA
-# =========================
 def init_data():
-
     if "tasks" not in session:
         session["tasks"] = []
 
@@ -16,21 +12,12 @@ def init_data():
         session["notes"] = []
 
     if "agenda" not in session:
-        session["agenda"] = []
-
-    if "voice_notes" not in session:
-        session["voice_notes"] = []# =========================
-# HOME
-# =========================
-@app.route("/")
+        session["agenda"] = []@app.route("/")
 def home():
     init_data()
     return render_template("index.html")
 
 
-# =========================
-# TAREAS
-# =========================
 @app.route("/tareas", methods=["GET", "POST"])
 def tareas():
 
@@ -49,10 +36,7 @@ def tareas():
     return render_template(
         "tareas.html",
         tasks=session["tasks"]
-    )# =========================
-# NOTAS
-# =========================
-@app.route("/notas", methods=["GET", "POST"])
+    )@app.route("/notas", methods=["GET", "POST"])
 def notas():
 
     init_data()
@@ -73,9 +57,6 @@ def notas():
     )
 
 
-# =========================
-# AGENDA
-# =========================
 @app.route("/agenda", methods=["GET", "POST"])
 def agenda():
 
@@ -94,44 +75,35 @@ def agenda():
     return render_template(
         "agenda.html",
         agenda=session["agenda"]
-    )# =========================
-# CALENDARIO
-# =========================
-@app.route("/calendario")
+    )@app.route("/calendario")
 def calendario():
     return render_template("calendario.html")
 
 
-# =========================
-# NOTAS POR VOZ
-# =========================
 @app.route("/voz")
 def voz():
     return render_template("voz.html")
 
 
-# =========================
-# MÚSICA
-# =========================
 @app.route("/musica")
 def musica():
-    return render_template("musica.html")# =========================
-# ELIMINAR
-# =========================
-@app.route("/delete/<tipo>/<int:index>")
+    return render_template("musica.html")@app.route("/delete/<tipo>/<int:index>")
 def delete(tipo, index):
 
     init_data()
 
     if tipo == "tarea":
+
         if 0 <= index < len(session["tasks"]):
             session["tasks"].pop(index)
 
     elif tipo == "nota":
+
         if 0 <= index < len(session["notes"]):
             session["notes"].pop(index)
 
     elif tipo == "agenda":
+
         if 0 <= index < len(session["agenda"]):
             session["agenda"].pop(index)
 
@@ -140,25 +112,23 @@ def delete(tipo, index):
     return redirect(request.referrer or url_for("home"))
 
 
-# =========================
-# SALIR
-# =========================
 @app.route("/salir")
 def salir():
+
     session.clear()
+
     return redirect(url_for("home"))
 
 
-# =========================
-# RUN APP
-# =========================
+@app.errorhandler(404)
+def not_found(error):
+
+    return render_template("404.html"), 404
+
+
 if __name__ == "__main__":
-    import os
-
-    port = int(os.environ.get("PORT", 5000))
-
     app.run(
         host="0.0.0.0",
-        port=port,
+        port=5000,
         debug=True
     )
