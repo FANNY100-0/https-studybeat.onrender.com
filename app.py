@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 app = Flask(__name__)
-app.secret_key = "studybeat_2026_final_key"
+app.secret_key = "studybeat_2026_full_app"
 
 
 # =========================
@@ -14,6 +14,12 @@ def init_data():
     if "tasks" not in session:
         session["tasks"] = []
 
+    if "notes" not in session:
+        session["notes"] = []
+
+    if "goals" not in session:
+        session["goals"] = []
+
 
 # =========================
 # BOT BEATBOT 🎧
@@ -22,21 +28,21 @@ def bot_response(msg):
     msg = msg.lower()
 
     if any(x in msg for x in ["hola", "hello", "hey"]):
-        return "¡Hola! Soy BeatBot 🎧 listo para ayudarte."
+        return "¡Hola! Soy BeatBot 🎧"
 
     if "tarea" in msg:
-        return "Ve al Planner 📚 para organizar tus tareas."
+        return "Ve a Tareas 📚"
 
-    if "musica" in msg or "música" in msg:
-        return "Escucha música en la sección Music 🎶"
+    if "nota" in msg:
+        return "Ve a Notas 📝"
 
-    if "estres" in msg or "estrés" in msg:
-        return "Respira 😌, haz una pausa corta."
+    if "meta" in msg:
+        return "Ve a Metas 🎯"
 
-    if "focus" in msg:
-        return "Activa Focus Mode 🔥 para concentrarte mejor."
+    if "estres" in msg:
+        return "Respira 😌"
 
-    return "No entendí 😅 pero puedo ayudarte con estudio, tareas o música."# =========================
+    return "Te ayudo con tareas, notas o metas 📚"# =========================
 # HOME
 # =========================
 @app.route("/")
@@ -46,69 +52,54 @@ def home():
 
 
 # =========================
-# DASHBOARD
+# TAREAS
 # =========================
-@app.route("/dashboard")
-def dashboard():
-    init_data()
-    return render_template("dashboard.html")
-
-
-# =========================
-# PLANNER
-# =========================
-@app.route("/planner", methods=["GET", "POST"])
-def planner():
+@app.route("/tareas", methods=["GET", "POST"])
+def tareas():
     init_data()
 
     if request.method == "POST":
         task = request.form.get("task")
-
         if task:
             session["tasks"].append(task)
             session.modified = True
+        return redirect(url_for("tareas"))
 
-        return redirect(url_for("planner"))
-
-    return render_template("planner.html", tasks=session["tasks"])
+    return render_template("tareas.html", tasks=session["tasks"])
 
 
 # =========================
-# DELETE TASK
+# NOTAS
 # =========================
-@app.route("/delete_task/<int:index>")
-def delete_task(index):
+@app.route("/notas", methods=["GET", "POST"])
+def notas():
     init_data()
 
-    if 0 <= index < len(session["tasks"]):
-        session["tasks"].pop(index)
-        session.modified = True
+    if request.method == "POST":
+        note = request.form.get("note")
+        if note:
+            session["notes"].append(note)
+            session.modified = True
+        return redirect(url_for("notas"))
 
-    return redirect(url_for("planner"))
-
-
-# =========================
-# MUSIC
-# =========================
-@app.route("/music")
-def music():
-    return render_template("music.html")
+    return render_template("notas.html", notes=session["notes"])
 
 
 # =========================
-# FOCUS
+# METAS
 # =========================
-@app.route("/focus")
-def focus():
-    return render_template("focus.html")
+@app.route("/metas", methods=["GET", "POST"])
+def metas():
+    init_data()
 
+    if request.method == "POST":
+        goal = request.form.get("goal")
+        if goal:
+            session["goals"].append(goal)
+            session.modified = True
+        return redirect(url_for("metas"))
 
-# =========================
-# SETTINGS
-# =========================
-@app.route("/settings")
-def settings():
-    return render_template("settings.html")# =========================
+    return render_template("metas.html", goals=session["goals"])# =========================
 # BOT API
 # =========================
 @app.route("/bot", methods=["POST"])
@@ -116,12 +107,12 @@ def bot():
     init_data()
 
     data = request.get_json(force=True)
-    user_msg = data.get("message", "")
+    msg = data.get("message", "")
 
-    response = bot_response(user_msg)
+    response = bot_response(msg)
 
     session["chat"].append({
-        "user": user_msg,
+        "user": msg,
         "bot": response
     })
 
@@ -134,7 +125,7 @@ def bot():
 
 
 # =========================
-# GET CHAT
+# CHAT HISTORY
 # =========================
 @app.route("/chat")
 def chat():
@@ -143,53 +134,29 @@ def chat():
 
 
 # =========================
-# CLEAR CHAT
+# DELETE TASK / NOTE / GOAL
 # =========================
-@app.route("/clear_chat")
-def clear_chat():
-    session["chat"] = []
+@app.route("/delete/<tipo>/<int:index>")
+def delete(tipo, index):
+    init_data()
+
+    if tipo == "tarea" and index < len(session["tasks"]):
+        session["tasks"].pop(index)
+
+    if tipo == "nota" and index < len(session["notes"]):
+        session["notes"].pop(index)
+
+    if tipo == "meta" and index < len(session["goals"]):
+        session["goals"].pop(index)
+
     session.modified = True
+    return redirect(request.referrer or url_for("home"))
+
+
+# =========================
+# LOGOUT / SALIR
+# =========================
+@app.route("/salir")
+def salir():
+    session.clear()
     return redirect(url_for("home"))
-
-
-# =========================
-# STATUS CHECK
-# =========================
-@app.route("/status")
-def status():
-    return jsonify({
-        "app": "StudyBeat",
-        "status": "running",
-        "modules": {
-            "bot": True,
-            "planner": True,
-            "music": True,
-            "focus": True
-        }
-    })
-
-
-# =========================
-# ERROR HANDLER
-# =========================
-@app.errorhandler(404)
-def not_found(e):
-    return jsonify({
-        "error": "Ruta no encontrada",
-        "hint": "Revisa /dashboard /planner /music /focus"
-    }), 404
-
-
-# =========================
-# RUN APP
-# =========================
-if __name__ == "__main__":
-    import os
-
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(
-        host="0.0.0.0",
-        port=port,
-        debug=True
-    )
