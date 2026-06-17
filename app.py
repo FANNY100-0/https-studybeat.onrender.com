@@ -111,6 +111,21 @@ def metas():
     return render_template(
         "metas.html",
         goals=session["goals"]
+    )# =========================
+# MUSICA
+# =========================
+@app.route("/musica")
+def musica():
+    canciones = [
+        {
+            "nombre": "Lofi Study",
+            "url": "https://www.youtube.com/embed/jfKfPfyJRdk"
+        }
+    ]
+
+    return render_template(
+        "musica.html",
+        canciones=canciones
     )
 
 
