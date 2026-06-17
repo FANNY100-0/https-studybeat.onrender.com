@@ -1,116 +1,54 @@
-{% extends 'base.html' %}
-
-{% block title %}
-Dashboard
-{% endblock %}
-
+{% extends "base.html" %}
 {% block content %}
 
-<h1 class="page-title">
-    Bienvenido, {{ current_user.username }}
-</h1>
+<h1 class="title">Bienvenido a StudyBeat 🎧</h1>
 
-<div class="cards-grid">
+<div class="grid">
 
-```
-<div class="card stat-card">
-    <h3>Tareas Pendientes</h3>
-    <span>{{ pending_tasks }}</span>
-</div>
-
-<div class="card stat-card">
-    <h3>Promedio General</h3>
-    <span>{{ average }}</span>
-</div>
-
-<div class="card stat-card">
-    <h3>Metas Activas</h3>
-    <span>{{ active_goals }}</span>
-</div>
-
-<div class="card stat-card">
-    <h3>Materias</h3>
-    <span>{{ subjects }}</span>
-</div>
-```
-
-</div>
-
-<div class="dashboard-grid">
-
-```
-<section class="card">
-
-    <h2>Próximas Tareas</h2>
-
-    {% for task in tasks[:5] %}
-
-    <div class="list-item">
-
-        <h4>{{ task.title }}</h4>
-
-        <small>
-            {{ task.due_date }}
-        </small>
-
+    <div class="card">
+        <h3>📚 Tareas pendientes</h3>
+        <p class="big">{{ pending_tasks }}</p>
     </div>
 
-    {% endfor %}
-
-</section>
-
-<section class="card">
-
-    <h2>Últimas Calificaciones</h2>
-
-    {% for grade in grades[:5] %}
-
-    <div class="list-item">
-
-        <h4>{{ grade.subject }}</h4>
-
-        <strong>{{ grade.score }}</strong>
-
+    <div class="card">
+        <h3>✅ Completadas</h3>
+        <p class="big">{{ completed_tasks }}</p>
     </div>
 
-    {% endfor %}
-
-</section>
-```
-
-</div>
-
-<div class="card">
-
-```
-<h2>Metas Académicas</h2>
-
-{% for goal in goals %}
-
-<div class="goal-item">
-
-    <div class="goal-header">
-
-        <span>{{ goal.title }}</span>
-
-        <span>{{ goal.progress }}%</span>
-
+    <div class="card">
+        <h3>📊 Promedio</h3>
+        <p class="big">{{ average }}</p>
     </div>
 
-    <div class="progress-bar">
-
-        <div
-            class="progress"
-            style="width: {{ goal.progress }}%">
-        </div>
-
+    <div class="card">
+        <h3>🔥 Productividad</h3>
+        <p class="big">{{ productivity }}%</p>
     </div>
 
 </div>
 
-{% endfor %}
-```
+<div class="section">
+
+    <div class="card wide">
+        <h3>📈 Progreso general</h3>
+        <canvas id="chart"></canvas>
+    </div>
 
 </div>
+
+<script>
+const ctx = document.getElementById('chart');
+
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Completadas', 'Pendientes'],
+        datasets: [{
+            data: [{{ completed_tasks }}, {{ pending_tasks }}],
+            backgroundColor: ['#22c55e', '#ef4444']
+        }]
+    }
+});
+</script>
 
 {% endblock %}
