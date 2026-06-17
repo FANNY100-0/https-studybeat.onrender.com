@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 app = Flask(__name__)
-app.secret_key = "studybeat_final_2026"
+app.secret_key = "studybeat_fixed_2026"
 
 
 # =========================
@@ -22,13 +22,13 @@ def init_data():
 
 
 # =========================
-# BOT BEATBOT 🎧
+# BOT LOGIC
 # =========================
 def bot_response(msg):
     msg = msg.lower()
 
-    if any(x in msg for x in ["hola", "hello", "hey"]):
-        return "¡Hola! Soy BeatBot 🎧"
+    if "hola" in msg:
+        return "Hola 👋 soy BeatBot"
 
     if "tarea" in msg:
         return "Ve a /tareas 📚"
@@ -42,7 +42,7 @@ def bot_response(msg):
     if "estres" in msg:
         return "Respira 😌"
 
-    return "Puedo ayudarte con tareas, notas o metas 📚"@app.route("/")
+    return "Te ayudo con tareas, notas y metas 📚"@app.route("/")
 def home():
     init_data()
     return render_template("index.html")
@@ -73,7 +73,10 @@ def notas():
             session.modified = True
         return redirect(url_for("notas"))
 
-    return render_template("notas.html", notes=session["notes"])@app.route("/metas", methods=["GET", "POST"])
+    return render_template("notas.html", notes=session["notes"])
+
+
+@app.route("/metas", methods=["GET", "POST"])
 def metas():
     init_data()
 
@@ -84,10 +87,7 @@ def metas():
             session.modified = True
         return redirect(url_for("metas"))
 
-    return render_template("metas.html", goals=session["goals"])
-
-
-@app.route("/delete/<tipo>/<int:index>")
+    return render_template("metas.html", goals=session["goals"])@app.route("/delete/<tipo>/<int:index>")
 def delete(tipo, index):
     init_data()
 
@@ -137,7 +137,7 @@ def status():
     return jsonify({
         "app": "StudyBeat",
         "status": "ok",
-        "modules": ["bot", "tareas", "notas", "metas"]
+        "routes": ["/", "/tareas", "/notas", "/metas"]
     })
 
 
