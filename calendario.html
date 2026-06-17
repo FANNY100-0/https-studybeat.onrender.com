@@ -2,33 +2,37 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Calendario - StudyBeat 2026</title>
+    <title>Calendario - StudyBeat</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; }
-        .calendar-container { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 20px; }
-        .nav-links { margin-bottom: 20px; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
-        .day { padding: 10px; border: 1px solid #eee; background: #f9f9f9; }
+        body { font-family: 'Segoe UI', sans-serif; text-align: center; background-color: #f4f7f6; padding: 20px; }
+        .nav-back { display: inline-block; margin-bottom: 20px; color: #333; text-decoration: none; font-weight: bold; }
+        .calendar-grid { 
+            display: grid; 
+            grid-template-columns: repeat(7, 1fr); 
+            gap: 10px; 
+            max-width: 500px; 
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .day { padding: 15px; border: 1px solid #eee; border-radius: 5px; background: #fff; }
+        .header-day { font-weight: bold; color: #555; }
     </style>
 </head>
 <body>
 
-    <h1>Calendario</h1>
-    
-    <div class="nav-links">
-        <a href="/">Volver al Inicio</a>
-    </div>
+    <a href="/" class="nav-back">← Volver al inicio</a>
+    <h1>Calendario Junio 2026</h1>
 
-    <div class="calendar-container">
-        <h2>Junio 2026</h2>
-        <div class="calendar-grid">
-            <div class="day">Lun</div><div class="day">Mar</div><div class="day">Mié</div>
-            <div class="day">Jue</div><div class="day">Vie</div><div class="day">Sáb</div><div class="day">Dom</div>
-            
-            {% for i in range(1, 31) %}
-                <div class="day">{{ i }}</div>
-            {% endfor %}
-        </div>
+    <div class="calendar-grid">
+        <div class="header-day">Lun</div><div class="header-day">Mar</div><div class="header-day">Mié</div>
+        <div class="header-day">Jue</div><div class="header-day">Vie</div><div class="header-day">Sáb</div><div class="header-day">Dom</div>
+        
+        {% for day in range(1, 31) %}
+            <div class="day">{{ day }}</div>
+        {% endfor %}
     </div>
 
 </body>
