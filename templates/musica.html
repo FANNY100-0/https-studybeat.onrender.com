@@ -1,71 +1,70 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Música - StudyBeat</title>
 
-{% block title %}
-Música
-{% endblock %}
+<style>
+body{
+background:#0f0f0f;
+color:white;
+font-family:Arial;
+margin:0;
+}
 
-{% block content %}
+header{
+background:#151515;
+padding:20px;
+text-align:center;
+}
 
-<h1 class="page-title">
-    Música para Estudiar
-</h1>
+.container{
+width:90%;
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
 
-<div class="music-grid">
+.card{
+background:#1b1b1b;
+padding:20px;
+border-radius:12px;
+}
 
-```
+iframe{
+width:100%;
+height:500px;
+border:none;
+border-radius:10px;
+}
+
+a{
+color:#00cfff;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<h1>🎵 Música para Estudiar</h1>
+<a href="/">⬅ Volver al inicio</a>
+</header>
+
+<div class="container">
+
 <div class="card">
 
-    <h3>LoFi Hip Hop</h3>
+<h2>LoFi Study Beats</h2>
 
-    <iframe
-        width="100%"
-        height="315"
-        src="https://www.youtube.com/embed/jfKfPfyJRdk"
-        allowfullscreen>
-    </iframe>
+<iframe
+src="https://www.youtube.com/embed/jfKfPfyJRdk"
+allowfullscreen>
+</iframe>
 
 </div>
 
-<div class="card">
-
-    <h3>Piano Relajante</h3>
-
-    <iframe
-        width="100%"
-        height="315"
-        src="https://www.youtube.com/embed/lFcSrYw-ARY"
-        allowfullscreen>
-    </iframe>
-
 </div>
 
-<div class="card">
-
-    <h3>Música Instrumental</h3>
-
-    <iframe
-        width="100%"
-        height="315"
-        src="https://www.youtube.com/embed/WPni755-Krg"
-        allowfullscreen>
-    </iframe>
-
-</div>
-
-<div class="card">
-
-    <h3>Study Music</h3>
-
-    <iframe
-        width="100%"
-        height="315"
-        src="https://www.youtube.com/embed/5qap5aO4i9A"
-        allowfullscreen>
-    </iframe>
-
-</div>
-```
-
-</div>
-
-{% endblock %}
+</body>
+</html>
