@@ -1,0 +1,29 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+
+def bot_response(msg):
+    msg = msg.lower()
+
+    if "hola" in msg:
+        return "Hola 👋"
+
+    if "tarea" in msg:
+        return "Ve a tareas 📚"
+
+    return "No entendí 😅"
+
+
+@app.route("/bot", methods=["POST"])
+def bot():
+    data = request.get_json()
+    msg = data.get("message", "")
+
+    return jsonify({
+        "response": bot_response(msg)
+    })
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
