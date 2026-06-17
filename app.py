@@ -4,19 +4,16 @@ app = Flask(__name__)
 app.secret_key = "studybeat_2026"
 
 # =========================
-# GESTIÓN DE DATOS EN SESIÓN
+# LÓGICA DE DATOS
 # =========================
 def init_data():
-    """Inicializa las listas en la sesión si no existen."""
-    if "tasks" not in session:
-        session["tasks"] = []
-    if "notes" not in session:
-        session["notes"] = []
-    if "agenda" not in session:
-        session["agenda"] = []
+    """Asegura que las listas existan en la sesión."""
+    if "tasks" not in session: session["tasks"] = []
+    if "notes" not in session: session["notes"] = []
+    if "agenda" not in session: session["agenda"] = []
 
 # =========================
-# RUTAS PRINCIPALES
+# RUTAS
 # =========================
 
 @app.route("/")
@@ -56,10 +53,6 @@ def agenda():
         return redirect(url_for("agenda"))
     return render_template("agenda.html", agenda=session["agenda"])
 
-# =========================
-# RUTAS DE UTILIDADES Y VISTAS
-# =========================
-
 @app.route("/calendario")
 def calendario():
     return render_template("calendario.html")
@@ -73,20 +66,17 @@ def musica():
     return render_template("musica.html")
 
 # =========================
-# LÓGICA DE ELIMINACIÓN
+# ELIMINAR Y SALIR
 # =========================
 
 @app.route("/delete/<tipo>/<int:index>")
 def delete(tipo, index):
     init_data()
-    # Mapeo de tipos para simplificar la lógica
     mapeo = {"tarea": "tasks", "nota": "notes", "agenda": "agenda"}
-    
     key = mapeo.get(tipo)
     if key and 0 <= index < len(session[key]):
         session[key].pop(index)
         session.modified = True
-        
     return redirect(request.referrer or url_for("home"))
 
 @app.route("/salir")
@@ -94,17 +84,9 @@ def salir():
     session.clear()
     return redirect(url_for("home"))
 
-# =========================
-# GESTIÓN DE ERRORES
-# =========================
-
 @app.errorhandler(404)
-def not_found(error):
+def not_found(e):
     return render_template("404.html"), 404
-
-# =========================
-# EJECUCIÓN
-# =========================
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
