@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 
 app = Flask(__name__)
-app.secret_key = "studybeat_2026_full_app"
+app.secret_key = "studybeat_final_2026"
 
 
 # =========================
@@ -31,29 +31,23 @@ def bot_response(msg):
         return "¡Hola! Soy BeatBot 🎧"
 
     if "tarea" in msg:
-        return "Ve a Tareas 📚"
+        return "Ve a /tareas 📚"
 
     if "nota" in msg:
-        return "Ve a Notas 📝"
+        return "Ve a /notas 📝"
 
     if "meta" in msg:
-        return "Ve a Metas 🎯"
+        return "Ve a /metas 🎯"
 
     if "estres" in msg:
         return "Respira 😌"
 
-    return "Te ayudo con tareas, notas o metas 📚"# =========================
-# HOME
-# =========================
-@app.route("/")
+    return "Puedo ayudarte con tareas, notas o metas 📚"@app.route("/")
 def home():
     init_data()
     return render_template("index.html")
 
 
-# =========================
-# TAREAS
-# =========================
 @app.route("/tareas", methods=["GET", "POST"])
 def tareas():
     init_data()
@@ -68,9 +62,6 @@ def tareas():
     return render_template("tareas.html", tasks=session["tasks"])
 
 
-# =========================
-# NOTAS
-# =========================
 @app.route("/notas", methods=["GET", "POST"])
 def notas():
     init_data()
@@ -82,13 +73,7 @@ def notas():
             session.modified = True
         return redirect(url_for("notas"))
 
-    return render_template("notas.html", notes=session["notes"])
-
-
-# =========================
-# METAS
-# =========================
-@app.route("/metas", methods=["GET", "POST"])
+    return render_template("notas.html", notes=session["notes"])@app.route("/metas", methods=["GET", "POST"])
 def metas():
     init_data()
 
@@ -99,10 +84,24 @@ def metas():
             session.modified = True
         return redirect(url_for("metas"))
 
-    return render_template("metas.html", goals=session["goals"])# =========================
-# BOT API
-# =========================
-@app.route("/bot", methods=["POST"])
+    return render_template("metas.html", goals=session["goals"])
+
+
+@app.route("/delete/<tipo>/<int:index>")
+def delete(tipo, index):
+    init_data()
+
+    if tipo == "tarea" and index < len(session["tasks"]):
+        session["tasks"].pop(index)
+
+    if tipo == "nota" and index < len(session["notes"]):
+        session["notes"].pop(index)
+
+    if tipo == "meta" and index < len(session["goals"]):
+        session["goals"].pop(index)
+
+    session.modified = True
+    return redirect(request.referrer or url_for("home"))@app.route("/bot", methods=["POST"])
 def bot():
     init_data()
 
@@ -124,39 +123,31 @@ def bot():
     })
 
 
-# =========================
-# CHAT HISTORY
-# =========================
 @app.route("/chat")
 def chat():
     init_data()
-    return jsonify(session["chat"])
-
-
-# =========================
-# DELETE TASK / NOTE / GOAL
-# =========================
-@app.route("/delete/<tipo>/<int:index>")
-def delete(tipo, index):
-    init_data()
-
-    if tipo == "tarea" and index < len(session["tasks"]):
-        session["tasks"].pop(index)
-
-    if tipo == "nota" and index < len(session["notes"]):
-        session["notes"].pop(index)
-
-    if tipo == "meta" and index < len(session["goals"]):
-        session["goals"].pop(index)
-
-    session.modified = True
-    return redirect(request.referrer or url_for("home"))
-
-
-# =========================
-# LOGOUT / SALIR
-# =========================
-@app.route("/salir")
+    return jsonify(session["chat"])@app.route("/salir")
 def salir():
     session.clear()
     return redirect(url_for("home"))
+
+
+@app.route("/status")
+def status():
+    return jsonify({
+        "app": "StudyBeat",
+        "status": "ok",
+        "modules": ["bot", "tareas", "notas", "metas"]
+    })
+
+
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({
+        "error": "Ruta no encontrada",
+        "tip": "usa /tareas /notas /metas"
+    }), 404
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
