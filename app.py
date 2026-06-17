@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 app = Flask(__name__)
 app.secret_key = "studybeat_2026"
 
+# Inicialización de sesiones
 def init_data():
     if "tasks" not in session: session["tasks"] = []
     if "notes" not in session: session["notes"] = []
