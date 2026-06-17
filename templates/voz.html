@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Notas por Voz - StudyBeat</title>
+
+<style>
+body{
+background:#0f0f0f;
+color:white;
+font-family:Arial;
+text-align:center;
+padding:30px;
+}
+
+.card{
+background:#1b1b1b;
+padding:20px;
+border-radius:12px;
+max-width:700px;
+margin:auto;
+}
+
+button{
+padding:12px 20px;
+background:#00cfff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+textarea{
+width:100%;
+height:200px;
+margin-top:20px;
+border:none;
+border-radius:10px;
+padding:10px;
+}
+
+a{
+color:#00cfff;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<h1>🎤 Notas por Voz</h1>
+
+<p>Presiona el botón y dicta tu nota.</p>
+
+<button onclick="startRecognition()">
+🎙 Iniciar grabación
+</button>
+
+<textarea id="texto"></textarea>
+
+<br><br>
+
+<a href="/">⬅ Volver al inicio</a>
+
+</div>
+
+<script>
+function startRecognition(){
+
+const recognition =
+new(window.SpeechRecognition ||
+window.webkitSpeechRecognition)();
+
+recognition.lang="es-ES";
+
+recognition.start();
+
+recognition.onresult=function(event){
+
+document.getElementById("texto").value=
+event.results[0][0].transcript;
+
+};
+
+}
+</script>
+
+</body>
+</html>
