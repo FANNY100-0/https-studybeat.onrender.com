@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda - StudyBeat</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#0f0f0f;
+    color:white;
+}
+
+header{
+    background:#151515;
+    padding:20px;
+    text-align:center;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.card{
+    background:#1b1b1b;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+form{
+    display:flex;
+    gap:10px;
+}
+
+input{
+    flex:1;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#00cfff;
+    font-weight:bold;
+}
+
+.evento{
+    background:#242424;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+a{
+    color:#00cfff;
+    text-decoration:none;
+}
+
+.eliminar{
+    float:right;
+    color:#ff6666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>📒 Agenda StudyBeat</h1>
+    <a href="/">⬅ Volver al inicio</a>
+</header>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Nuevo evento</h2>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="event"
+                placeholder="Ejemplo: Entregar proyecto el viernes"
+                required
+            >
+
+            <button type="submit">
+                Guardar
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Mis eventos</h2>
+
+        {% if agenda %}
+
+            {% for item in agenda %}
+
+                <div class="evento">
+
+                    {{ item }}
+
+                    <a
+                        class="eliminar"
+                        href="/delete/agenda/{{ loop.index0 }}"
+                    >
+                        🗑
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No hay eventos registrados.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
