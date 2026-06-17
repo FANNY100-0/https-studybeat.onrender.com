@@ -1,20 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-# La clave secreta es necesaria para manejar las sesiones
 app.secret_key = "studybeat_2026"
 
 # =========================
 # LÓGICA DE DATOS
 # =========================
 def init_data():
-    """Inicializa las listas de la sesión si no están creadas."""
+    """Inicializa las listas de la sesión si no existen."""
     if "tasks" not in session: session["tasks"] = []
     if "notes" not in session: session["notes"] = []
     if "agenda" not in session: session["agenda"] = []
 
 # =========================
-# RUTAS DE NAVEGACIÓN
+# RUTAS PRINCIPALES
 # =========================
 
 @app.route("/")
@@ -55,24 +54,12 @@ def agenda():
     return render_template("agenda.html", agenda=session["agenda"])
 
 # =========================
-# RUTAS ESTÁTICAS
+# OTRAS RUTAS (Sin calendario ni música)
 # =========================
-
-@app.route("/calendario")
-def calendario():
-    return render_template("calendario.html")
 
 @app.route("/voz")
 def voz():
     return render_template("voz.html")
-
-@app.route("/musica")
-def musica():
-    return render_template("musica.html")
-
-# =========================
-# LÓGICA DE GESTIÓN
-# =========================
 
 @app.route("/delete/<tipo>/<int:index>")
 def delete(tipo, index):
