@@ -1,16 +1,29 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>📝 Mis Tareas</h2>
-<form method="POST" class="card" style="margin-bottom: 20px;">
-    <input type="text" name="titulo" placeholder="Nueva tarea..." required style="padding: 10px; width: 70%;">
-    <button type="submit" style="padding: 10px; background: #1DB954; border:none; color:white;">Agregar</button>
-</form>
-<div class="card">
-    {% for t in tareas %}
-    <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #333;">
-        {{ t.titulo }}
-        <a href="{{ url_for('delete_tarea', id=t.id) }}" style="color: #ff4d4d;">Eliminar</a>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Tareas</title>
+</head>
+<body>
+    <h1>Mis Tareas</h1>
+    
+    <form action="/tareas" method="POST">
+        <input type="text" name="task" placeholder="Escribe una tarea..." required>
+        <button type="submit">Agregar</button>
+    </form>
+
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task }} 
+                <a href="{{ url_for('delete', tipo='tarea', index=loop.index0) }}">[Eliminar]</a>
+            </li>
+        {% else %}
+            <li>No hay tareas pendientes.</li>
+        {% endfor %}
+    </ul>
+
+    <br>
+    <a href="/">Volver al inicio</a>
+</body>
+</html>
