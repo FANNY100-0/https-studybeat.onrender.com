@@ -1,19 +1,23 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
+# Es fundamental tener una secret_key para usar sesiones
 app.secret_key = "studybeat_2026"
 
 # =========================
-# LÓGICA DE DATOS
+# LÓGICA DE INICIALIZACIÓN
 # =========================
 def init_data():
-    """Asegura que las listas existan en la sesión."""
-    if "tasks" not in session: session["tasks"] = []
-    if "notes" not in session: session["notes"] = []
-    if "agenda" not in session: session["agenda"] = []
+    """Inicializa las listas en la sesión si no existen."""
+    if "tasks" not in session:
+        session["tasks"] = []
+    if "notes" not in session:
+        session["notes"] = []
+    if "agenda" not in session:
+        session["agenda"] = []
 
 # =========================
-# RUTAS
+# RUTAS PRINCIPALES
 # =========================
 
 @app.route("/")
@@ -53,6 +57,10 @@ def agenda():
         return redirect(url_for("agenda"))
     return render_template("agenda.html", agenda=session["agenda"])
 
+# =========================
+# RUTAS DE UTILIDAD
+# =========================
+
 @app.route("/calendario")
 def calendario():
     return render_template("calendario.html")
@@ -66,7 +74,7 @@ def musica():
     return render_template("musica.html")
 
 # =========================
-# ELIMINAR Y SALIR
+# GESTIÓN DE ELIMINACIÓN
 # =========================
 
 @app.route("/delete/<tipo>/<int:index>")
@@ -74,15 +82,21 @@ def delete(tipo, index):
     init_data()
     mapeo = {"tarea": "tasks", "nota": "notes", "agenda": "agenda"}
     key = mapeo.get(tipo)
+    
     if key and 0 <= index < len(session[key]):
         session[key].pop(index)
         session.modified = True
+        
     return redirect(request.referrer or url_for("home"))
 
 @app.route("/salir")
 def salir():
     session.clear()
     return redirect(url_for("home"))
+
+# =========================
+# ERRORES Y EJECUCIÓN
+# =========================
 
 @app.errorhandler(404)
 def not_found(e):
