@@ -1,38 +1,176 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>StudyBeat 🎧</title>
 
-{% block title %}
-StudyBeat
-{% endblock %}
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: white;
+    }
 
-{% block auth_content %}
+    header {
+      background: #141414;
+      padding: 15px;
+      text-align: center;
+      font-size: 22px;
+      color: #00d4ff;
+      font-weight: bold;
+    }
 
-<div class="hero">
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      background: #1c1c1c;
+      padding: 10px;
+    }
 
-```
-<div class="hero-content">
+    nav a {
+      color: white;
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+    }
 
-    <h1>StudyBeat</h1>
+    nav a:hover {
+      background: #00d4ff;
+      color: black;
+    }
 
-    <p>
-        Organiza tus tareas, controla tus calificaciones,
-        alcanza tus metas y estudia con música.
-    </p>
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px;
+      padding: 20px;
+    }
 
-    <div class="hero-buttons">
+    .card {
+      background: #1b1b1b;
+      padding: 15px;
+      border-radius: 10px;
+      min-height: 300px;
+    }
 
-        <a href="{{ url_for('login') }}" class="btn">
-            Iniciar Sesión
-        </a>
+    /* BOT */
+    #chatBox {
+      height: 220px;
+      overflow-y: auto;
+      background: #0d0d0d;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
 
-        <a href="{{ url_for('register') }}" class="btn btn-outline">
-            Crear Cuenta
-        </a>
+    input {
+      width: 70%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
 
-    </div>
+    button {
+      padding: 10px;
+      border: none;
+      background: #00d4ff;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #00aacc;
+    }
+
+    ul {
+      padding-left: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  StudyBeat 🎧
+</header>
+
+<nav>
+  <a href="/tareas">Tareas</a>
+  <a href="/notas">Notas</a>
+  <a href="/metas">Metas</a>
+  <a href="/salir">Salir</a>
+</nav>
+
+<div class="container">
+
+  <!-- BOT -->
+  <div class="card">
+    <h3>🤖 BeatBot</h3>
+
+    <div id="chatBox"></div>
+
+    <input id="userInput" placeholder="Escribe algo..." />
+    <button onclick="sendMessage()">Enviar</button>
+  </div>
+
+  <!-- TAREAS -->
+  <div class="card">
+    <h3>📚 Accesos rápidos</h3>
+    <ul>
+      <li><a href="/tareas">Ir a Tareas</a></li>
+      <li><a href="/notas">Ir a Notas</a></li>
+      <li><a href="/metas">Ir a Metas</a></li>
+    </ul>
+  </div>
+
+  <!-- INFO -->
+  <div class="card">
+    <h3>⚡ Study Panel</h3>
+    <p>Organiza tu estudio:</p>
+    <ul>
+      <li>✔ Tareas</li>
+      <li>✔ Notas</li>
+      <li>✔ Metas</li>
+      <li>✔ Bot de ayuda</li>
+    </ul>
+  </div>
 
 </div>
-```
 
-</div>
+<script>
+function sendMessage() {
+    let input = document.getElementById("userInput");
+    let msg = input.value.trim();
 
-{% endblock %}
+    if (!msg) return;
+
+    document.getElementById("chatBox").innerHTML +=
+        "<p><b>Tú:</b> " + msg + "</p>";
+
+    fetch("/bot", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: msg })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("chatBox").innerHTML +=
+            "<p><b>Bot:</b> " + data.response + "</p>";
+
+        let chat = document.getElementById("chatBox");
+        chat.scrollTop = chat.scrollHeight;
+    });
+
+    input.value = "";
+}
+</script>
+
+</body>
+</html>
